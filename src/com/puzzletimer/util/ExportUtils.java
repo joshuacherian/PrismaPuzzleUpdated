@@ -1,9 +1,11 @@
 package com.puzzletimer.util;
 
 import java.util.ArrayList;
-import java.io.File;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.io.PrintWriter;
 
+import static com.puzzletimer.Internationalization._;
 import com.puzzletimer.models.Solution;
 import com.puzzletimer.state.SolutionManager;
 import com.puzzletimer.statistics.Average;
@@ -14,7 +16,7 @@ public class ExportUtils
     private static ArrayList<Solution> currentTwelve;
     private static ArrayList<Solution> currentHundred;
 
-    public static void ExportToFile(File target, SolutionManager solutionManager)
+    public static void ExportToFile(SolutionManager solutionManager)
     {
         // clear these out each export so we're not carrying data from previous export
         currentFive = new ArrayList<Solution>();
@@ -34,7 +36,8 @@ public class ExportUtils
             String[] columnHeaders = {"Solution Date & Time", "Scramble", "Time Elapsed (seconds)", "Current Ao5",
                     "Current Ao12", "Current Ao100"};
 
-            PrintWriter writer = new PrintWriter(target);
+            String fileDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+            PrintWriter writer = new PrintWriter(fileDate + " " + _("tools.export_filename"));
             writer.write(StringUtils.join(",", columnHeaders) + "\n");
 
             for (Solution solution : solutions)

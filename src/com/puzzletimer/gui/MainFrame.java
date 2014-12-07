@@ -14,7 +14,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
@@ -937,14 +936,9 @@ public class MainFrame extends JFrame {
         // menuItemExport
         this.exportSolutionsToCSV.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser("Choose a file to export to");
-                int result = chooser.showDialog(MainFrame.this,"Choose");
-
-                if (result == JFileChooser.APPROVE_OPTION){
-                    File chosenFile = chooser.getSelectedFile();
-                    ExportUtils.ExportToFile(chosenFile, solutionManager);
-                }
+            public void actionPerformed(ActionEvent e)
+            {
+                    ExportUtils.ExportToFile(solutionManager);
             }
         });
 
