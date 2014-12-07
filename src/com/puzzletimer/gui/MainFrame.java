@@ -1121,8 +1121,8 @@ public class MainFrame extends JFrame {
         this.stackmatTimerInputDeviceGroup = new ButtonGroup();
 
         //menuTools
-        this.toolsMenu = new JMenu("Tools");
-        this.exportSolutionsToCSV = new JMenuItem("Export solutions to CSV...");
+        this.toolsMenu = new JMenu(_("main.tools"));
+        this.exportSolutionsToCSV = new JMenuItem(_("main.export_csv"));
         toolsMenu.add(this.exportSolutionsToCSV);
         menuBar.add(this.toolsMenu);
 
