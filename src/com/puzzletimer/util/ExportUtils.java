@@ -13,6 +13,9 @@ import com.puzzletimer.statistics.Average;
  */
 public class ExportUtils
 {
+    private static ArrayList<Solution> currentFive;
+    private static ArrayList<Solution> currentTwelve;
+    private static ArrayList<Solution> currentHundred;
 
     public static void ExportToFile(File target, SolutionManager solutionManager)
     {
@@ -22,19 +25,21 @@ public class ExportUtils
         // we want the solutions to be in reverse order (earliest to latest)
         // so calculated averages are correct (i.e. Ao12 is of the current solve
         // and the 11 previous solves)
-        for (Solution solution : solutionsArray)
-        {
+        for (Solution solution : solutionsArray) {
             solutionsList.add(0, solution);
         }
 
-        ArrayList<Solution> currentFive = new ArrayList<Solution>();
-        ArrayList<Solution> currentTwelve = new ArrayList<Solution>();
-        ArrayList<Solution> currentHundred = new ArrayList<Solution>();
+        currentFive = new ArrayList<Solution>();
+        currentTwelve = new ArrayList<Solution>();
+        currentHundred = new ArrayList<Solution>();
 
         try
         {
+            String[] columnHeaders = { "Solution Date & Time", "Scramble", "Time Elapsed (seconds)", "Current Ao5",
+                                       "Current Ao12", "Current Ao100"};
+
             PrintWriter writer = new PrintWriter(target);
-            writer.write("Solution Date & Time,Scramble,Time Elapsed,Current Ao5,Current Ao12,Current Ao100\n");
+            writer.write(StringUtils.join(",", columnHeaders) + "\n");
 
             for (Solution solution : solutionsList)
             {
@@ -74,7 +79,8 @@ public class ExportUtils
                 String timeElapsed = SolutionUtils.formatSeconds(solution.getTiming().getElapsedTime());
                 String scramble = solution.getScramble().getRawSequence();
 
-                writer.write(date + "," + scramble + "," + timeElapsed + "," + ao5 + "," + ao12 + "," + ao100 + "\n");
+                String[] rowValues = { date, scramble, timeElapsed, ao5, ao12, ao100 };
+                writer.write(StringUtils.join(",", rowValues) + "\n");
             }
 
             writer.close();
