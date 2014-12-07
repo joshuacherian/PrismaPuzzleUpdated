@@ -14,6 +14,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
@@ -26,20 +27,9 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.DataLine.Info;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
+import com.puzzletimer.util.ExportUtils;
 import net.miginfocom.swing.MigLayout;
 
 import com.puzzletimer.graphics.Panel3D;
@@ -77,7 +67,6 @@ import com.puzzletimer.timer.SpaceKeyTimer;
 import com.puzzletimer.timer.StackmatTimer;
 import com.puzzletimer.tips.TipProvider;
 import com.puzzletimer.util.SolutionUtils;
-
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
@@ -593,6 +582,8 @@ public class MainFrame extends JFrame {
     private AudioFormat audioFormat;
     private Mixer.Info mixerInfo;
 
+    private JMenu toolsMenu;
+    private JMenuItem exportSolutionsToCSV;
 
     public MainFrame(
             MessageManager messageManager,
@@ -605,7 +596,7 @@ public class MainFrame extends JFrame {
             TipProvider tipProvider,
             CategoryManager categoryManager,
             ScrambleManager scrambleManager,
-            SolutionManager solutionManager,
+            final SolutionManager solutionManager,
             SessionManager sessionManager) {
         this.messageManager = messageManager;
         this.puzzleProvider = puzzleProvider;
@@ -943,6 +934,20 @@ public class MainFrame extends JFrame {
             }
         });
 
+        // menuItemExport
+        this.exportSolutionsToCSV.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser("Choose a file to export to");
+                int result = chooser.showDialog(MainFrame.this,"Choose");
+
+                if (result == JFileChooser.APPROVE_OPTION){
+                    File chosenFile = chooser.getSelectedFile();
+                    ExportUtils.ExportToFile(chosenFile, solutionManager);
+                }
+            }
+        });
+
         // labelMessage
         this.messageManager.addListener(new MessageManager.Listener() {
             @Override
@@ -1114,6 +1119,12 @@ public class MainFrame extends JFrame {
         menuTimerTrigger.setMnemonic(KeyEvent.VK_S);
         menuOptions.add(this.stackmatTimerInputDevice);
         this.stackmatTimerInputDeviceGroup = new ButtonGroup();
+
+        //menuTools
+        this.toolsMenu = new JMenu("Tools");
+        this.exportSolutionsToCSV = new JMenuItem("Export solutions to CSV...");
+        toolsMenu.add(this.exportSolutionsToCSV);
+        menuBar.add(this.toolsMenu);
 
         //menuHelp
         JMenu menuHelp = new JMenu(_("main.help"));
