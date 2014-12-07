@@ -5,6 +5,8 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.io.PrintWriter;
 
+import javax.swing.JOptionPane;
+
 import static com.puzzletimer.Internationalization._;
 import com.puzzletimer.models.Solution;
 import com.puzzletimer.state.SolutionManager;
@@ -23,6 +25,9 @@ public class ExportUtils
         currentTwelve = new ArrayList<Solution>();
         currentHundred = new ArrayList<Solution>();
 
+        String fileDate = new SimpleDateFormat("dd-MM-yyyy hhmm a").format(new Date());
+        String fileName = fileDate + " " + _("tools.export_filename");
+
         // we want the solutions to be in reverse order (earliest to latest)
         // so calculated averages are correct (i.e. Ao12 is of the current solve
         // and the 11 previous solves)
@@ -36,8 +41,7 @@ public class ExportUtils
             String[] columnHeaders = {"Solution Date & Time", "Scramble", "Time Elapsed (seconds)", "Current Ao5",
                     "Current Ao12", "Current Ao100"};
 
-            String fileDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-            PrintWriter writer = new PrintWriter(fileDate + " " + _("tools.export_filename"));
+            PrintWriter writer = new PrintWriter(fileName);
             writer.write(StringUtils.join(",", columnHeaders) + "\n");
 
             for (Solution solution : solutions)
@@ -58,8 +62,12 @@ public class ExportUtils
 
         } catch (Exception e)
         {
-            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(null, "Unable to export solutions: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        String message = solutions.size() + " solutions successfully exported to " + fileName;
+        JOptionPane.showMessageDialog(null, message, "Complete!", JOptionPane.PLAIN_MESSAGE);
     }
 
     private static String calculateAverageOfFive(Solution solution)
