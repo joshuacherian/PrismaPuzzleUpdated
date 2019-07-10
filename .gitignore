@@ -1,0 +1,8 @@
+
+# IntelliJ stuff
+.idea/
+*.iml
+
+# Build stuff
+bin/
+classes/
